@@ -9,9 +9,8 @@ import java.util.Scanner;
 
 public class Server {
 	private Socket socketNum;
-    public Server(Socket socket){
+    public Server(Socket socket, int i){
         try {
-            new Thread(new InputHandler(socket)).start();
             socketNum=socket;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -22,14 +21,10 @@ public class Server {
     	BufferedReader reader=null;
     	  boolean commune = true;
           BufferedWriter writer = null;
-          System.out.print("j");
           try {
-        	  System.out.print("n");
               writer = new BufferedWriter(new OutputStreamWriter(socketNum.getOutputStream()));
               Scanner scanner = new Scanner(System.in);
-              
-                  System.out.print("> ");
-                  String text = scanner.nextLine();
+                  String text = string;
                   writer.write(text);
                   writer.newLine();
                   writer.flush();
@@ -41,12 +36,33 @@ public class Server {
               exp.printStackTrace();
           } 
     }
+    public String inputCatcher(){
+		 boolean commune = true;
+        BufferedReader reader = null;
+        try {
+        	
+            reader = new BufferedReader(new InputStreamReader(socketNum.getInputStream()));
+            String text=null;
+            while(text==null){
+                text = reader.readLine();
+            }
+                return text;
+            
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } 
+        
+        return "Failure in the INPUT CATCHER";
+    }
     public static class InputHandler implements Runnable {
 
         private Socket socket;
+        
+        private int num=0;
 
-        public InputHandler(Socket socket) {
+        public InputHandler(Socket socket, int i) {
             this.socket = socket;
+            num=i;
         }
 
         @Override
@@ -57,7 +73,7 @@ public class Server {
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 while (commune) {
                     String text = reader.readLine();
-                    System.out.println("\n<client> " + text);
+                    System.out.println("\n<client "+num+"> " + text);
                     if (text.toLowerCase().equals("bye")) {
                         commune = false;
                     }
@@ -115,4 +131,8 @@ public class Server {
             }
         }
     }
+    public class Input{
+    	
+    	}
+    
 }
