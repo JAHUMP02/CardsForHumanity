@@ -16,10 +16,10 @@ public class MultiServer extends Thread{
 		Scanner in=new Scanner(System.in);
 		try{
 		boolean isInterrupted=false;
-		Socket ss=socket.accept();
 		int num=0;
 		ArrayList<String> names=new ArrayList<String>();
 		while(!isInterrupted){
+			Socket ss=socket.accept();
 			Server thread=new Server(ss, num);
 			serverThreads.add(thread);
 			System.out.println(serverThreads.size());
@@ -33,7 +33,7 @@ public class MultiServer extends Thread{
 			score[i]=0;
 		}
 		boolean acceptable=true;
-		int finalscore;
+		int finalscore=5;
 		while(acceptable == true){
 			System.out.println("What is the score you will be trying to reach?");
 			finalscore = in.nextInt();
@@ -52,20 +52,20 @@ public class MultiServer extends Thread{
 			}
 		}
 		President prez=new President(serverThreads.size());
-		
+		int current=prez.nextczar();
 		int[] choice=new int[serverThreads.size()];
 		
 		boolean winner=false;
 		while(winner==false){
 			
 			int[] inputs=new int[serverThreads.size()];
-			for(Server s:serverThreads){
-				s.OutputAll("Welcome");
+			for(int i=0; i<serverThreads.size(); i++){
+				serverThreads.get(i).OutputAll("Welcome");
 			}
-			//for(Server s:serverThreads){
-			//	s.OutputAll("Enter name");
-			//	names.add(s.inputCatcher());
-			//}
+			for(int i=0; i<serverThreads.size(); i++){
+				serverThreads.get(i).OutputAll("Enter name");
+				names.add(serverThreads.get(i).inputCatcher());
+			}
 			for(String s:names){
 				System.out.println(s);
 			}
@@ -74,7 +74,7 @@ public class MultiServer extends Thread{
 				s.OutputAll(blackCard);
 			}
 			for(int i=0; i<serverThreads.size(); i++){
-				//if(prez.nextczar()==i){
+				//if(current==i){
 					
 				//}else{
 				Server s=serverThreads.get(i);
@@ -84,21 +84,44 @@ public class MultiServer extends Thread{
 				//}
 			}
 			for(int i=0; i<serverThreads.size(); i++){
-				//if(prez.nextczar()==i){
+				//if(current==i){
 				//}else{
 				Server s=serverThreads.get(i);
 				s.OutputAll("Input your choice");
 				System.out.println("l");
 				String string=s.inputCatcher();
 				System.out.println("HiLo");
-				choice[i]=Integer.getInteger
+				choice[i]=Integer.parseInt
 						(string);
 				System.out.println(string);
 				//}
 			}
 			
 			System.out.println("Enter number of client");
+			for(Server s: serverThreads){
+				for(int i=0; i<choice.length; i++){
+					s.OutputAll(i+": "+playercards[i][choice[i]].getItems());
+				}
+			}
+			serverThreads.get(current).OutputAll("Pick your poison");
+			int chosen=Integer.parseInt(serverThreads.get(current).inputCatcher());
+			score[chosen]++;
 			
+			for(int i = 0; i < score.length; i++){
+				if(score[i] == finalscore){
+					winner = true;
+				}
+			}
+			if(winner!=true)
+			for(int i=0; i<playercards.length; i++){
+				if(i!=current)
+				playercards[i][choice[i]]=fh.deal();
+			}
+			for(Server s:serverThreads){
+				for(int i=0; i<score.length; i++){
+					s.OutputAll(Integer.toString(score[i]));
+				}
+			}
 		}
 		}catch(Exception e){
 			e.printStackTrace();
