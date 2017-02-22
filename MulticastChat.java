@@ -51,11 +51,9 @@ public class MulticastChat {
     frame.pack ();
   }
       
-  public Runnable start () throws IOException {
+  public void start () throws IOException {
     netStart ();
     frame.setVisible (true);
-	return null;
-    
   }
   public void stop () throws IOException {
     netStop ();
