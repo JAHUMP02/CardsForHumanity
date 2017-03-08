@@ -54,24 +54,22 @@ public class MultiServer extends Thread{
 		President prez=new President(serverThreads.size());
 		int current=prez.nextczar();
 		int[] choice=new int[serverThreads.size()];
-		
+		int[] inputs=new int[serverThreads.size()];
+		for(int i=0; i<serverThreads.size(); i++){
+			serverThreads.get(i).OutputAll("2 Welcome");
+		}
+		for(int i=0; i<serverThreads.size(); i++){
+			serverThreads.get(i).OutputAll("3 Enter name");
+			names.add(serverThreads.get(i).inputCatcher());
+		}
+		for(String s:names){
+			System.out.println(s);
+		}
 		boolean winner=false;
 		while(winner==false){
-			
-			int[] inputs=new int[serverThreads.size()];
-			for(int i=0; i<serverThreads.size(); i++){
-				serverThreads.get(i).OutputAll("Welcome");
-			}
-			for(int i=0; i<serverThreads.size(); i++){
-				serverThreads.get(i).OutputAll("Enter name");
-				names.add(serverThreads.get(i).inputCatcher());
-			}
-			for(String s:names){
-				System.out.println(s);
-			}
 			String blackCard=fh.dealBlack().getItems();
 			for(Server s:serverThreads){
-				s.OutputAll(blackCard);
+				s.OutputAll("1 "+blackCard);
 			}
 			for(int i=0; i<serverThreads.size(); i++){
 				//if(current==i){
@@ -79,7 +77,7 @@ public class MultiServer extends Thread{
 				//}else{
 				Server s=serverThreads.get(i);
 				for(int j=0; j<playercards[0].length; j++){
-					s.OutputAll(j+": "+playercards[i][j].getItems());
+					s.OutputAll("0 "+j+" "+playercards[i][j].getItems());
 				}
 				//}
 			}
@@ -87,7 +85,7 @@ public class MultiServer extends Thread{
 				//if(current==i){
 				//}else{
 				Server s=serverThreads.get(i);
-				s.OutputAll("Input your choice");
+				s.OutputAll("2 Input your choice");
 				System.out.println("l");
 				String string=s.inputCatcher();
 				System.out.println("HiLo");
@@ -100,11 +98,15 @@ public class MultiServer extends Thread{
 			System.out.println("Enter number of client");
 			for(Server s: serverThreads){
 				for(int i=0; i<choice.length; i++){
-					s.OutputAll(i+": "+playercards[i][choice[i]].getItems());
+					s.OutputAll("4 "+i+": "+playercards[i][choice[i]].getItems());
 				}
+				s.OutputAll("5");
 			}
-			serverThreads.get(current).OutputAll("Pick your poison");
+			serverThreads.get(current).OutputAll("1 Pick your poison");
 			int chosen=Integer.parseInt(serverThreads.get(current).inputCatcher());
+			for(Server s: serverThreads){
+				s.OutputAll("6");
+			}
 			score[chosen]++;
 			
 			for(int i = 0; i < score.length; i++){
